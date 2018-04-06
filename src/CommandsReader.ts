@@ -11,7 +11,7 @@ export class CommandsReader {
     private mower: Mower;
     private _self = this;
 
-    public getMowers(): Mower[]{
+    public getMowers(callback): void{
         // check file for validity
         var self = this._self;
         fs.readFile('./inputs', 'utf8', function(err, data) {  
@@ -21,32 +21,27 @@ export class CommandsReader {
             for (let line of lines){
                 if(i == 1){
                     self.position_max = self.getCorners(line);
-                    console.log(' ## Position max X / Y : ' + self.position_max.X +' / '+self.position_max.Y);
                 }else{
                     if(i%2 == 0){
                         self.mower = self.getMower(line);
-                        console.log(' ## Orientation : ' + self.mower.Orientation.toString());
-                        console.log(' ## Position X / Y : '+ self.mower.Position.X +' / '+self.mower.Position.Y);
                     }else{
                         self.mower.Instruction = self.getCommands(line).slice(0);
-                        console.log(' ## Instruction : ' + self.mower.Instruction.toString());
+                        self.mowers.push(self.mower);
                     }
                 }
-                self.mowers.push(self.mower);
                 i++;
             }
+            callback(self.mowers);
         });
-
-        return self.mowers;
     }
 
-    public getCorners(data:string): Position {
+    private getCorners(data:string): Position {
         // check data
         let position : Position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
         return position;
     }
 
-    public getMower(data:string): Mower {
+    private getMower(data:string): Mower {
         //check data
         let mower: Mower;
         let orientation:Orientation;
@@ -74,7 +69,7 @@ export class CommandsReader {
         return mower;
     }
 
-    public getCommands(data:string): Instruction[] {
+    private getCommands(data:string): Instruction[] {
         //check data
         let instruction:Instruction[] = [];
         let errors : string;
@@ -95,5 +90,9 @@ export class CommandsReader {
             }
         }
         return instruction;
+    }
+
+    public get Position_max() :Position{
+        return this.position_max;
     }
 }

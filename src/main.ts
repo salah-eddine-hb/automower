@@ -2,38 +2,29 @@ import { Mower } from './Mower';
 import { Position } from './Position';
 import { Orientation } from './Orientation';
 import { Instruction } from './Instruction';
+import { CommandsReader } from './CommandsReader';
 
 
 //redandency in Y-1, X+1, .. and Position_max
 export class Main {
-
+    private _self = this;
     public main(): void {
-        let position_max = new Position(5,5);
-
-        let position1 = new Position(0,0);
-        let mower1 = new Mower(position1, Orientation.NORD);
-
-        let position2 = new Position(2,2);
-        let mower2 = new Mower(position2, Orientation.EST);
-
-        mower1 = this.move(mower1, Instruction.RIGHT, position_max);
-        mower1 = this.move(mower1, Instruction.FORWARD, position_max);
-        mower1 = this.move(mower1, Instruction.LEFT, position_max);
-        mower1 = this.move(mower1, Instruction.FORWARD, position_max);
-        mower1 = this.move(mower1, Instruction.LEFT, position_max);
-        mower1 = this.move(mower1, Instruction.LEFT, position_max);
-        mower1 = this.move(mower1, Instruction.FORWARD, position_max);
-        console.log('X : ' + mower1.Position.X+ '   Y : '+mower1.Position.Y+'   Orientation : '+ mower1.Orientation );
-
-        mower2 = this.move(mower2, Instruction.RIGHT, position_max);
-        mower2 = this.move(mower2, Instruction.RIGHT, position_max);
-        mower2 = this.move(mower2, Instruction.FORWARD, position_max);
-        mower2 = this.move(mower2, Instruction.FORWARD, position_max);
-        mower2 = this.move(mower2, Instruction.FORWARD, position_max);
-        mower2 = this.move(mower2, Instruction.FORWARD, position_max);
-        mower2 = this.move(mower2, Instruction.FORWARD, position_max);
-        mower2 = this.move(mower2, Instruction.FORWARD, position_max);
-        console.log('X : ' + mower2.Position.X+ '   Y : '+mower2.Position.Y+'   Orientation : '+ mower2.Orientation );
+        var self = this._self;
+        let commandsReader: CommandsReader = new CommandsReader();
+        commandsReader.getMowers(function(value: Mower[]){
+            let mowers: Mower[]; 
+            mowers = value;
+            let mower: Mower;
+            let instruction: Instruction;
+            for (let i = 0; i < mowers.length; i++) {
+                mower = mowers[i];
+                for (let j = 0; j < mower.Instruction.length; j++) {
+                    instruction = mower.Instruction[j];
+                    mower = self.move(mower, instruction, commandsReader.Position_max);
+                }
+                console.log('X : ' + mower.Position.X+ ' Y : '+mower.Position.Y+' Orientation : '+ mower.Orientation);
+            }
+        });
     }
 
     public move(mower: Mower, instruction: Instruction, position_max:Position): Mower{
