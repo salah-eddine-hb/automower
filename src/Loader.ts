@@ -5,29 +5,28 @@ import { Executor } from "./Executor";
 import { Orientation } from "./Orientation";
 import { Instruction } from "./Instruction";
 
-export class Main {
+export class Loader {
 
     /**
-    * Get an array of mowers from the file
-    * @param callback - A callback that get the mowers for further processing
-    * @returns Array of Mower.
+    * Load mowers from the file
+    * and run the Executor to execute instructions
     */
-    public getMowers(): void {
+    public loadMowers(): void {
         let self = this;
         let executor = new Executor();
-        fs.readFile('./inputs', 'utf8', function (err, data) {
+        fs.readFile('inputs', 'utf8', function (err, data) {
             if (err) throw err;
-            let mowers: Mower[] = [];
+            const lines = data.toString().split('\n');
+            const mowers: Mower[] = [];
             let corner: Point;
             let mower: Mower;
             let index = 1;
-            const lines = data.toString().split('\n');
             for (let line of lines) {
                 if (index == 1) corner = self.getCorners(line);
                 else {
                     if (index % 2 == 0) mower = self.getMower(line);
                     else {
-                        mower.Instructions = self.getCommands(line).slice(0);
+                        mower.Instructions = self.getCommands(line);
                         mowers.push(mower);
                     }
                 } index++;
@@ -82,24 +81,24 @@ export class Main {
     * @returns New Instruction object
     */
     private getCommands(data: string): Instruction[] {
-        let instruction: Instruction[] = [];
+        let instructions: Instruction[] = [];
         for (let index = 0; index < data.length; index++) {
-            const element = data[index];
-            switch (element) {
+            const instruction = data[index];
+            switch (instruction) {
                 case 'G':
-                    instruction.push(Instruction.LEFT);
+                    instructions.push(Instruction.LEFT);
                     break;
                 case 'D':
-                    instruction.push(Instruction.RIGHT);
+                    instructions.push(Instruction.RIGHT);
                     break;
                 case 'A':
-                    instruction.push(Instruction.FORWARD);
+                    instructions.push(Instruction.FORWARD);
                     break;
                 default:
                     //error
                     break;
             }
-        } return instruction;
+        } return instructions;
     }
 
 }

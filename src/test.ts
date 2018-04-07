@@ -1,4 +1,4 @@
-import { Main } from "./main";
+import { Loader } from "./Loader";
 
-let m = new Main();
-m.getMowers();
+let loader = new Loader();
+loader.loadMowers();
