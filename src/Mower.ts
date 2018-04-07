@@ -1,32 +1,29 @@
-import { Orientation } from './Orientation';
 import { Position } from './Position';
+import { Orientation } from './Orientation';
 import { Instruction } from './Instruction';
 
 export class Mower {
+    
+    private instructions: Instruction[];
 
-    private instructions :Instruction[];
-    constructor(private position:Position, private orientation:Orientation) { } 
+    constructor(private position: Position, private orientation: Orientation) { }
 
-    /**
-     * Instruction
-     */
-    public get Instruction(): Instruction[] {
+    public get Instructions(): Instruction[] {
         return this.instructions;
     }
-    public get Position(){
+    public get Position() {
         return this.position;
     }
-    public get Orientation(){
+    public get Orientation() {
         return this.orientation;
     }
-
-    public set Position(value:Position){
+    public set Position(value: Position) {
         this.position = value;
     }
-    public set Orientation(value:Orientation){
+    public set Orientation(value: Orientation) {
         this.orientation = value;
     }
-    public set Instruction(value:Instruction[]){
+    public set Instructions(value: Instruction[]) {
         this.instructions = value;
     }
 }

@@ -6,49 +6,42 @@ import { Instruction } from "./Instruction";
 
 export class CommandsReader {
 
-    private position_max: Position;
-    private mowers: Mower[] = []; 
-    private mower: Mower;
-    private _self = this;
-
-    public getMowers(callback): void{
+    public getMowers(callback): void {
         // check file for validity
-        var self = this._self;
-        fs.readFile('./inputs', 'utf8', function(err, data) {  
+        let self = this;
+        fs.readFile('./inputs', 'utf8', function (err, data) {
             if (err) throw err;
-            let i = 1;
+            let mowers: Mower[] = [];
+            let corner: Position;
+            let mower: Mower;
+            let index = 1;
             const lines = data.toString().split('\n');
-            for (let line of lines){
-                if(i == 1){
-                    self.position_max = self.getCorners(line);
-                }else{
-                    if(i%2 == 0){
-                        self.mower = self.getMower(line);
-                    }else{
-                        self.mower.Instruction = self.getCommands(line).slice(0);
-                        self.mowers.push(self.mower);
+            for (let line of lines) {
+                if (index == 1) corner = self.getCorners(line);
+                else {
+                    if (index % 2 == 0) mower = self.getMower(line);
+                    else {
+                        mower.Instructions = self.getCommands(line).slice(0);
+                        mowers.push(mower);
                     }
-                }
-                i++;
-            }
-            callback(self.mowers);
+                } index++;
+            } callback(mowers, corner);
         });
     }
 
-    private getCorners(data:string): Position {
+    private getCorners(data: string): Position {
         // check data
-        let position : Position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
-        return position;
+        let corner: Position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
+        return corner;
     }
 
-    private getMower(data:string): Mower {
+    private getMower(data: string): Mower {
         //check data
         let mower: Mower;
-        let orientation:Orientation;
         let position: Position;
+        let orientation: Orientation;
 
         position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
-
         switch (data.charAt(2)) {
             case 'N':
                 orientation = Orientation.NORD;
@@ -69,10 +62,9 @@ export class CommandsReader {
         return mower;
     }
 
-    private getCommands(data:string): Instruction[] {
+    private getCommands(data: string): Instruction[] {
         //check data
-        let instruction:Instruction[] = [];
-        let errors : string;
+        let instruction: Instruction[] = [];
         for (let index = 0; index < data.length; index++) {
             const element = data[index];
             switch (element) {
@@ -86,13 +78,10 @@ export class CommandsReader {
                     instruction.push(Instruction.FORWARD);
                     break;
                 default:
+                    //error
                     break;
             }
-        }
-        return instruction;
+        } return instruction;
     }
 
-    public get Position_max() :Position{
-        return this.position_max;
-    }
 }
