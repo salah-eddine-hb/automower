@@ -1,157 +1,105 @@
-import { Mower } from './Mower';
-import { Position } from './Position';
-import { Orientation } from './Orientation';
-import { Instruction } from './Instruction';
-import { CommandsReader } from './CommandsReader';
+import * as fs from "fs";
+import { Mower } from "./Mower";
+import { Point } from "./Point";
+import { Executor } from "./Executor";
+import { Orientation } from "./Orientation";
+import { Instruction } from "./Instruction";
 
 export class Main {
 
-    public main(): void {
+    /**
+    * Get an array of mowers from the file
+    * @param callback - A callback that get the mowers for further processing
+    * @returns Array of Mower.
+    */
+    public getMowers(): void {
         let self = this;
-        let commandsReader = new CommandsReader();
-        commandsReader.getMowers(function (mowers: Mower[], corner: Position) {
-            let instructions: Instruction[];
-            let instruction: Instruction;
+        let executor = new Executor();
+        fs.readFile('./inputs', 'utf8', function (err, data) {
+            if (err) throw err;
+            let mowers: Mower[] = [];
+            let corner: Point;
             let mower: Mower;
-            for (let i = 0; i < mowers.length; i++) {
-                mower = mowers[i];
-                instructions = mower.Instructions;
-                for (let j = 0; j < instructions.length; j++) {
-                    instruction = instructions[j];
-                    mower = self.move(mower, instruction, corner);
-                }
-                console.log('X : ' + mower.Position.X);
-                console.log('Y : ' + mower.Position.Y);
-                console.log('Orientation : ' + mower.Orientation);
-                console.log('##################################');
-            }
+            let index = 1;
+            const lines = data.toString().split('\n');
+            for (let line of lines) {
+                if (index == 1) corner = self.getCorners(line);
+                else {
+                    if (index % 2 == 0) mower = self.getMower(line);
+                    else {
+                        mower.Instructions = self.getCommands(line).slice(0);
+                        mowers.push(mower);
+                    }
+                } index++;
+            } executor.run(mowers, corner);
         });
     }
 
     /**
-    * Move the mower to the Right, Left or Forward
-    * @param (Mower, Instruction, Position Max)
-    * @returns Mower
+    * Get upper right corner of the lawn and the bottom left
+    * @param data - String that contain corners as "XY" form
+    * @returns A Position object representing the corners.
     */
-    private move(mower: Mower, instruction: Instruction, corner: Position): Mower {
-        if (instruction == Instruction.RIGHT) {
-            this.moveRight(mower);
-        } else if (instruction == Instruction.LEFT) {
-            this.moveLeft(mower);
-        } else if (instruction == Instruction.FORWARD) {
-            this.moveForward(mower, corner);
-        } else {
-            //error
-        } return mower;
+    private getCorners(data: string): Point {
+        let corner: Point = new Point(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
+        return corner;
     }
 
     /**
-    * Move the mower to the LEFT
-    * @param Mower
-    * @returns Mower
+    * Get the starting position and orientation as "XYO" without space
+    * @param data - String that contain mower position and orientation as "XYO" form 
+    * @returns New Mower object
     */
-    private moveLeft(mower: Mower): Mower {
-        if (mower.Orientation === Orientation.NORD) {
-            mower.Orientation = Orientation.WEST;
-        } else if (mower.Orientation === Orientation.SUD) {
-            mower.Orientation = Orientation.EST;
-        } else if (mower.Orientation === Orientation.WEST) {
-            mower.Orientation = Orientation.SUD;
-        } else if (mower.Orientation === Orientation.EST) {
-            mower.Orientation = Orientation.NORD;
-        } else {
-            //error
-        } return mower;
+    private getMower(data: string): Mower {
+        let mower: Mower;
+        let position: Point;
+        let orientation: Orientation;
+
+        position = new Point(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
+        switch (data.charAt(2)) {
+            case 'N':
+                orientation = Orientation.NORD;
+                break;
+            case 'S':
+                orientation = Orientation.SUD;
+                break;
+            case 'E':
+                orientation = Orientation.EST;
+                break;
+            case 'W':
+                orientation = Orientation.WEST;
+                break;
+            default:
+                break;
+        }
+        mower = new Mower(position, orientation);
+        return mower;
     }
 
     /**
-    * Move the mower to the RIGHT
-    * @param Mower
-    * @returns Mower
+    * Get Instructions to the mower to go throughout the lawn.
+    * @param data - String that contain all instructions without space (GADDAAGD)
+    * @returns New Instruction object
     */
-    private moveRight(mower: Mower): Mower {
-        if (mower.Orientation === Orientation.NORD) {
-            mower.Orientation = Orientation.EST;
-        } else if (mower.Orientation === Orientation.SUD) {
-            mower.Orientation = Orientation.WEST;
-        } else if (mower.Orientation === Orientation.WEST) {
-            mower.Orientation = Orientation.NORD;
-        } else if (mower.Orientation === Orientation.EST) {
-            mower.Orientation = Orientation.SUD;
-        } else {
-            //error
-        } return mower;
+    private getCommands(data: string): Instruction[] {
+        let instruction: Instruction[] = [];
+        for (let index = 0; index < data.length; index++) {
+            const element = data[index];
+            switch (element) {
+                case 'G':
+                    instruction.push(Instruction.LEFT);
+                    break;
+                case 'D':
+                    instruction.push(Instruction.RIGHT);
+                    break;
+                case 'A':
+                    instruction.push(Instruction.FORWARD);
+                    break;
+                default:
+                    //error
+                    break;
+            }
+        } return instruction;
     }
 
-    /**
-    * Move the mower FORWARD
-    * @param (Mower , Corner)
-    * @returns Mower
-    */
-    private moveForward(mower: Mower, corner: Position): Mower {
-        if (mower.Orientation === Orientation.NORD) {
-            if (this.checkMovingXForward(mower, corner))
-                mower.Position.Y = mower.Position.Y + 1;
-        } else if (mower.Orientation === Orientation.SUD) {
-            if (this.checkMovingYBackward(mower))
-                mower.Position.Y = mower.Position.Y - 1;
-        } else if (mower.Orientation === Orientation.WEST) {
-            if (this.checkMovingXBackward(mower))
-                mower.Position.X = mower.Position.X - 1;
-        } else if (mower.Orientation === Orientation.EST) {
-            if (this.checkMovingYForward(mower, corner))
-                mower.Position.X = mower.Position.X + 1;
-        } else {
-            //error
-        } return mower;
-    }
-
-    /**
-    * Check if the mower does not exceed the limits when moving X Forward
-    * @param (Mower , Corner)
-    * @returns True if it's OK to move X Farward
-    */
-    private checkMovingXForward(mower: Mower, corner: Position): boolean {
-        if ((mower.Position.X + 1) > corner.X) return false;
-        else return true;
-    }
-
-    /**
-    * Check if the mower does not exceed the limits when moving X Backward
-    * @param (Mower , Corner)
-    * @returns True if it's OK to move X Backward
-    */
-    private checkMovingXBackward(mower: Mower): boolean {
-        if (mower.Position.X - 1 < 0) return false;
-        else return true;
-    }
-
-   /**
-    * Check if the mower does not exceed the limits when moving Y Forward
-    * @param (Mower , Corner)
-    * @returns True if it's OK to move Y Forward
-    */
-    private checkMovingYForward(mower: Mower, corner: Position): boolean {
-        if ((mower.Position.Y + 1) > corner.Y) return false;
-        else return true;
-    }
-
-    /**
-    * Check if the mower does not exceed the limits when moving Y Backward
-    * @param (Mower , Corner)
-    * @returns True if it's OK to move Y Backward
-    */
-    private checkMovingYBackward(mower: Mower): boolean {
-        if (mower.Position.Y - 1 < 0) return false;
-        else return true;
-    }
-
-    /**
-    * Get the list of mowers from the file
-    * @param callback - A callback that get the mowers for further processing
-    * @returns Array of mowers.
-    */
-    private checkCollision(mower: Mower): boolean {
-        return true;
-    }
 }
