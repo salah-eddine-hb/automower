@@ -6,8 +6,12 @@ import { Instruction } from "./Instruction";
 
 export class CommandsReader {
 
+    /**
+    * Get an array of mowers from the file
+    * @param callback - A callback that get the mowers for further processing
+    * @returns Array of Mower.
+    */
     public getMowers(callback): void {
-        // check file for validity
         let self = this;
         fs.readFile('./inputs', 'utf8', function (err, data) {
             if (err) throw err;
@@ -29,14 +33,22 @@ export class CommandsReader {
         });
     }
 
+    /**
+    * Get upper right corner of the lawn and the bottom left
+    * @param data - String that contain corners as "XY" form
+    * @returns A Position object representing the corners.
+    */
     private getCorners(data: string): Position {
-        // check data
         let corner: Position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
         return corner;
     }
 
+    /**
+    * Get the starting position and orientation as "XYO" without space
+    * @param data - String that contain mower position and orientation as "XYO" form 
+    * @returns New Mower object
+    */
     private getMower(data: string): Mower {
-        //check data
         let mower: Mower;
         let position: Position;
         let orientation: Orientation;
@@ -62,8 +74,12 @@ export class CommandsReader {
         return mower;
     }
 
+    /**
+    * Get Instructions to the mower to go throughout the lawn.
+    * @param data - String that contain all instructions without space (GADDAAGD)
+    * @returns New Instruction object
+    */
     private getCommands(data: string): Instruction[] {
-        //check data
         let instruction: Instruction[] = [];
         for (let index = 0; index < data.length; index++) {
             const element = data[index];

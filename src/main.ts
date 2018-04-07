@@ -28,6 +28,11 @@ export class Main {
         });
     }
 
+    /**
+    * Move the mower to the Right, Left or Forward
+    * @param (Mower, Instruction, Position Max)
+    * @returns Mower
+    */
     private move(mower: Mower, instruction: Instruction, corner: Position): Mower {
         if (instruction == Instruction.RIGHT) {
             this.moveRight(mower);
@@ -40,6 +45,11 @@ export class Main {
         } return mower;
     }
 
+    /**
+    * Move the mower to the LEFT
+    * @param Mower
+    * @returns Mower
+    */
     private moveLeft(mower: Mower): Mower {
         if (mower.Orientation === Orientation.NORD) {
             mower.Orientation = Orientation.WEST;
@@ -54,6 +64,11 @@ export class Main {
         } return mower;
     }
 
+    /**
+    * Move the mower to the RIGHT
+    * @param Mower
+    * @returns Mower
+    */
     private moveRight(mower: Mower): Mower {
         if (mower.Orientation === Orientation.NORD) {
             mower.Orientation = Orientation.EST;
@@ -68,6 +83,11 @@ export class Main {
         } return mower;
     }
 
+    /**
+    * Move the mower FORWARD
+    * @param (Mower , Corner)
+    * @returns Mower
+    */
     private moveForward(mower: Mower, corner: Position): Mower {
         if (mower.Orientation === Orientation.NORD) {
             if (this.checkMovingXForward(mower, corner))
@@ -86,22 +106,51 @@ export class Main {
         } return mower;
     }
 
+    /**
+    * Check if the mower does not exceed the limits when moving X Forward
+    * @param (Mower , Corner)
+    * @returns True if it's OK to move X Farward
+    */
     private checkMovingXForward(mower: Mower, corner: Position): boolean {
         if ((mower.Position.X + 1) > corner.X) return false;
         else return true;
     }
+
+    /**
+    * Check if the mower does not exceed the limits when moving X Backward
+    * @param (Mower , Corner)
+    * @returns True if it's OK to move X Backward
+    */
     private checkMovingXBackward(mower: Mower): boolean {
         if (mower.Position.X - 1 < 0) return false;
         else return true;
     }
+
+   /**
+    * Check if the mower does not exceed the limits when moving Y Forward
+    * @param (Mower , Corner)
+    * @returns True if it's OK to move Y Forward
+    */
     private checkMovingYForward(mower: Mower, corner: Position): boolean {
         if ((mower.Position.Y + 1) > corner.Y) return false;
         else return true;
     }
+
+    /**
+    * Check if the mower does not exceed the limits when moving Y Backward
+    * @param (Mower , Corner)
+    * @returns True if it's OK to move Y Backward
+    */
     private checkMovingYBackward(mower: Mower): boolean {
         if (mower.Position.Y - 1 < 0) return false;
         else return true;
     }
+
+    /**
+    * Get the list of mowers from the file
+    * @param callback - A callback that get the mowers for further processing
+    * @returns Array of mowers.
+    */
     private checkCollision(mower: Mower): boolean {
         return true;
     }
