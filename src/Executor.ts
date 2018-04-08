@@ -1,5 +1,5 @@
 import { Mower } from './Mower';
-import { Point } from './Point';
+import { Position } from './Position';
 import { Orientation } from './Orientation';
 import { Instruction } from './Instruction';
 
@@ -10,7 +10,7 @@ export class Executor {
     * @param (Mowers, Corner)
     * 
     */
-    public run(mowers: Array<Mower>, corner: Point): void {
+    public run(mowers: Array<Mower>, corner: Position): void {
         let instructions: Array<Instruction>;
         let instruction: Instruction;
         let mower: Mower;
@@ -34,7 +34,7 @@ export class Executor {
     * @param (Mower, Instruction, Corner)
     * @returns Mower
     */
-    private move(mower: Mower, instruction: Instruction, corner: Point): Mower {
+    private move(mower: Mower, instruction: Instruction, corner: Position): Mower {
         if (instruction === Instruction.RIGHT) {
             this.moveRight(mower);
         } else if (instruction === Instruction.LEFT) {
@@ -89,7 +89,7 @@ export class Executor {
     * @param (Mower , Corner)
     * @returns Mower
     */
-    private moveForward(mower: Mower, corner: Point): Mower {
+    private moveForward(mower: Mower, corner: Position): Mower {
         if (mower.Orientation === Orientation.NORD) {
             if (this.checkMovingXForward(mower, corner))
                 mower.Position.Y = mower.Position.Y + 1;
@@ -112,7 +112,7 @@ export class Executor {
     * @param (Mower , Corner)
     * @returns True if it's OK to move X Farward
     */
-    private checkMovingXForward(mower: Mower, corner: Point): boolean {
+    private checkMovingXForward(mower: Mower, corner: Position): boolean {
         if ((mower.Position.X + 1) > corner.X) return false;
         else return true;
     }
@@ -132,7 +132,7 @@ export class Executor {
     * @param (Mower , Corner)
     * @returns True if it's OK to move Y Forward
     */
-    private checkMovingYForward(mower: Mower, corner: Point): boolean {
+    private checkMovingYForward(mower: Mower, corner: Position): boolean {
         if ((mower.Position.Y + 1) > corner.Y) return false;
         else return true;
     }

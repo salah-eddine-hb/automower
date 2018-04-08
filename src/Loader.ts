@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import { Mower } from "./Mower";
-import { Point } from "./Point";
+import { Position } from "./Position";
 import { Executor } from "./Executor";
 import { Orientation } from "./Orientation";
 import { Instruction } from "./Instruction";
@@ -18,7 +18,7 @@ export class Loader {
             if (err) throw err;
             const lines = data.toString().split('\n');
             const mowers: Array<Mower> = [];
-            let corner: Point;
+            let corner: Position;
             let mower: Mower;
             let index = 1;
             for (let line of lines) {
@@ -39,8 +39,8 @@ export class Loader {
     * @param data - String that contain corners as "XY" form
     * @returns A Position object representing the corners.
     */
-    private getCorners(data: string): Point {
-        let corner: Point = new Point(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
+    private getCorners(data: string): Position {
+        let corner: Position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
         return corner;
     }
 
@@ -51,10 +51,10 @@ export class Loader {
     */
     private getMower(data: string): Mower {
         let mower: Mower;
-        let position: Point;
+        let position: Position;
         let orientation: Orientation;
 
-        position = new Point(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
+        position = new Position(parseInt(data.charAt(0)), parseInt(data.charAt(1)));
         switch (data.charAt(2)) {
             case 'N':
                 orientation = Orientation.NORD;
