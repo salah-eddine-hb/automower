@@ -1,4 +1,4 @@
 import { Loader } from "./Loader";
 
-let loader = new Loader();
+const loader = new Loader();
 loader.loadMowers();

@@ -8,7 +8,7 @@ export class Mower {
 
     constructor(private position: Point, private orientation: Orientation) { }
 
-    public get Instructions(): Instruction[] {
+    public get Instructions(): Array<Instruction> {
         return this.instructions;
     }
     public get Position() {

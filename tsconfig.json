@@ -1,6 +1,7 @@
 {
     "compilerOptions": {
-      "target": "es5",
+      "target": "es6",
+      "pretty": true,
       "module": "commonjs",
       "outDir": "./build",
       "typeRoots": [
@@ -8,14 +9,13 @@
       ]
     },
     "files": [
-      "./node_modules/@types/node/index.d.ts"
+      "./src/test.ts"
     ],
     "include": [
       "src/**/*.ts",
     ],
     "exclude": [
       "node_modules",
-      "src/**/*.js",
       "build"
     ]
 }

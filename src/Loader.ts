@@ -17,7 +17,7 @@ export class Loader {
         fs.readFile('inputs', 'utf8', function (err, data) {
             if (err) throw err;
             const lines = data.toString().split('\n');
-            const mowers: Mower[] = [];
+            const mowers: Array<Mower> = [];
             let corner: Point;
             let mower: Mower;
             let index = 1;
@@ -80,8 +80,8 @@ export class Loader {
     * @param data - String that contain all instructions without space (GADDAAGD)
     * @returns New Instruction object
     */
-    private getCommands(data: string): Instruction[] {
-        let instructions: Instruction[] = [];
+    private getCommands(data: string): Array<Instruction> {
+        let instructions: Array<Instruction> = [];
         for (let index = 0; index < data.length; index++) {
             const instruction = data[index];
             switch (instruction) {

@@ -10,8 +10,8 @@ export class Executor {
     * @param (Mowers, Corner)
     * 
     */
-    public run(mowers: Mower[], corner: Point): void {
-        let instructions: Instruction[];
+    public run(mowers: Array<Mower>, corner: Point): void {
+        let instructions: Array<Instruction>;
         let instruction: Instruction;
         let mower: Mower;
         let self = this;
@@ -35,11 +35,11 @@ export class Executor {
     * @returns Mower
     */
     private move(mower: Mower, instruction: Instruction, corner: Point): Mower {
-        if (instruction == Instruction.RIGHT) {
+        if (instruction === Instruction.RIGHT) {
             this.moveRight(mower);
-        } else if (instruction == Instruction.LEFT) {
+        } else if (instruction === Instruction.LEFT) {
             this.moveLeft(mower);
-        } else if (instruction == Instruction.FORWARD) {
+        } else if (instruction === Instruction.FORWARD) {
             this.moveForward(mower, corner);
         } else {
             //error
@@ -148,10 +148,10 @@ export class Executor {
     }
 
     /**
-    * Get the list of mowers from the file
-    * @param callback - A callback that get the mowers for further processing
-    * @returns Array of mowers.
-    */
+    * Check collision with other mowers
+    * @param Mower
+    * @returns True if no collision detected
+    **/
     private checkCollision(mower: Mower): boolean {
         return true;
     }
